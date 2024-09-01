@@ -80,7 +80,7 @@ Class Master extends DBConnection {
 				$data .= " `{$k}`='{$v}' ";
 			}
 		}
-		$check = $this->conn->query("SELECT * FROM `fee_list` where `amount_from` = '{$amount_from}' and `amount_to` = '{$amount_to}' ".(!empty($id) ? " and id != {$id} " : "")." ")->num_rows;
+		$check = $this->conn->query("SELECT * FROM `fee_list` where `amount_from` = '{$amount_from}' and `amount_to` = '{$amount_to}' and currency= '{$currency}' ".(!empty($id) ? " and id != {$id} " : "")." ")->num_rows;
 		if($this->capture_err())
 			return $this->capture_err();
 		if($check > 0){
@@ -121,9 +121,31 @@ Class Master extends DBConnection {
 		return json_encode($resp);
 
 	}
+	// function get_fee(){
+	// 	extract($_POST);
+	// 	$fee_qry = $this->conn->query("SELECT fee FROM fee_list WHERE `amount_from` <= '{$amount}' AND `amount_to` >= '{$amount}' and currency ='{$currency}'  ORDER BY unix_timestamp(`date_created`) DESC LIMIT 1");
+	// 	$fee_percentage = 0;
+	// 	$fee = 0;
+		
+	// 	if ($fee_qry->num_rows > 0) {
+	// 		// Get the fee as a percentage
+	// 		$fee_percentage = $fee_qry->fetch_array()['fee'];
+	// 	}
+	
+	// 	// Calculate the fee based on the percentage
+	// 	$fee = ($fee_percentage / 100) * $amount;
+	
+	// 	$resp['status'] = 'success';
+	// 	$resp['fee'] = $fee;
+	// 	$resp['payable'] = floatval($fee) + floatval($amount);
+		
+	// 	return json_encode($resp);
+	// }
+
 	function get_fee(){
 		extract($_POST);
-		$fee_qry = $this->conn->query("SELECT fee FROM fee_list where `amount_from` <= '{$amount}'  and `amount_to` >= '{$amount}' order by unix_timestamp(`date_created`) desc limit 1 ");
+		$fee_qry = $this->conn->query("SELECT fee FROM fee_list WHERE `amount_from` <= '{$amount}' AND `amount_to` >= '{$amount}' and currency ='{$currency}'  ORDER BY unix_timestamp(`date_created`) DESC LIMIT 1");
+		// $fee_qry = $this->conn->query("SELECT fee FROM fee_list where amount_from <= '{$amount}'  and amount_to >= '{$amount}' order by unix_timestamp(date_created) desc limit 1 ");
 		$fee = 0;
 		if($fee_qry->num_rows > 0){
 			$fee = $fee_qry->fetch_array()['fee'];
@@ -133,6 +155,7 @@ Class Master extends DBConnection {
 		$resp['payable'] = floatval($fee) + floatval($amount);
 		return json_encode($resp);
 	}
+	
 	function save_transaction(){
 		if(empty($_POST['id'])){
 			$prefix = substr(str_shuffle(implode("",range("A","Z"))),0,3);
@@ -148,10 +171,19 @@ Class Master extends DBConnection {
 			$_POST['tracking_code'] = $code;
 		}
 		$_POST['user_id'] = $this->settings->userdata('id');
+		if( $this->settings->userdata('type') == 1){
+			$_POST['sender_agent_id'] = $this->settings->userdata('id');
+			// $_POST['reciver_agent_id'] = $this->settings->userdata('id');
+		}elseif($this->settings->userdata('type') == 2){
+			$_POST['sender_agent_id'] = $this->settings->userdata('user_id');
+			// $_POST['reciver_agent_id'] = $this->settings->userdata('user_id');
+		}else{
+			$_POST['sender_agent_id'] = $this->settings->userdata('id');
+		}
 		extract($_POST);
 		$data = "";
 		foreach($_POST as $k =>$v){
-			if(in_array($k,array('tracking_code','purpose','status','sending_amount','fee','user_id','branch_id'))){
+			if(in_array($k,array('tracking_code','purpose','status','sending_amount','fee','user_id','branch_id','sender_agent_id'))){
 				$v= $this->conn->real_escape_string($v);
 				if(!empty($data)) $data .=", ";
 				$data .=" `{$k}` = '{$v}' ";
@@ -246,8 +278,15 @@ Class Master extends DBConnection {
 	}
 	function save_receive(){
 		$_POST['receive_user_id'] = $this->settings->userdata('id');
+		if( $this->settings->userdata('type') == 1){
+			$_POST['reciver_agent_id'] = $this->settings->userdata('id');
+		}elseif($this->settings->userdata('type') == 2){
+			$_POST['reciver_agent_id'] = $this->settings->userdata('user_id');
+		}else{
+			$_POST['reciver_agent_id'] = $this->settings->userdata('id');
+		}
 		extract($_POST);
-		$sql = "UPDATE `transaction_list` set status = 1 where id = '{$id}'";
+		$sql = "UPDATE `transaction_list` set status = 1 , reciver_agent_id =  '{$reciver_agent_id}' where id = '{$id}'";
 		$save = $this->conn->query($sql);
 		if($save){
 			$data = "";
@@ -281,7 +320,7 @@ Class Master extends DBConnection {
 
 $Master = new Master();
 $action = !isset($_GET['f']) ? 'none' : strtolower($_GET['f']);
-$sysset = new SystemSettings();
+// $sysset = new SystemSettings();
 switch ($action) {
 	case 'save_branch':
 		echo $Master->save_branch();

@@ -99,6 +99,17 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
             <fieldset>
                 <legend>Details</legend>
                 <div class="form-group row">
+                <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="currency" class="control-label">Currency</label>
+                            <select  required name="currency" value="<?php echo isset($meta['currency']) ? $meta['currency'] : "" ?>" class="form-control form-control-sm rounded-0 text-right" id="currency">
+                                <option  value="">select</option>
+                                <option <?php echo isset($meta['currency']) && $meta['currency'] == 'USD' ? 'selected' : "" ?> value="USD">USD</option>
+                                <option <?php echo isset($meta['currency']) && $meta['currency'] == 'YR' ? 'selected' : "" ?> value="YR">YR</option>
+                                <option <?php echo isset($meta['currency']) && $meta['currency'] == 'SR' ? 'selected' : "" ?> value="SR">SR</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="sending_amount" class="control-label">Amount to Send</label>
@@ -113,24 +124,13 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="currency" class="control-label">Currency</label>
-                            <select required name="currency" value="<?php echo isset($meta['currency']) ? $meta['currency'] : "" ?>" class="form-control form-control-sm rounded-0 text-right" id="currency">
-                                <option  value="">select</option>
-                                <option <?php echo isset($meta['currency']) && $meta['currency'] == 'USD' ? 'selected' : "" ?> value="USD">USD</option>
-                                <option <?php echo isset($meta['currency']) && $meta['currency'] == 'YR' ? 'selected' : "" ?> value="YR">YR</option>
-                                <option <?php echo isset($meta['currency']) && $meta['currency'] == 'SR' ? 'selected' : "" ?> value="SR">SR</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <div class="form-group">
                             <label for="payable_amount" class="control-label">Payable Amount</label>
                             <input type="text" pattern="[0-9.]+" class="form-control form-control-sm rounded-0 text-right" id="payable_amount" required value="<?php echo isset($sending_amount) && isset($fee) ? $fee + $sending_amount :0 ?>" readonly>
                         </div>
                     </div>
+                   
                 </div>
+               
                 <div class="form-group row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -172,10 +172,13 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 		})
         $('#sending_amount').on('input',function(e){
             var amount = $(this).val()
-            $.ajax({
+            var currency = $('#currency').val();
+            console.log(currency);
+            if(currency != ''){
+                $.ajax({
                 url:_base_url_+'classes/Master.php?f=get_fee',
                 method:'POST',
-                data:{amount:amount},
+                data:{amount:amount,currency:currency},
                 dataType:'json',
                 error:err=>{
                     console.log(err)
@@ -191,6 +194,12 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     }
                 }
             })
+            }
+            else{
+                alert_toast("Please Select the currency first.",'error')
+
+            }
+        
         })
 		$('#transaction-form').submit(function(e){
 			e.preventDefault();

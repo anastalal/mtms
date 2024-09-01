@@ -14,9 +14,13 @@ class SystemSettings extends DBConnection{
 		return($this->conn);
 	}
 	function load_system_info(){
-		// if(!isset($_SESSION['system_info'])){
+		$user2 =0;
+		if(isset($_SESSION['userdata']['user_id'])){
+			$user2 = $_SESSION['userdata']['user_id'];
+		}
 		//   $user_id =$this->userdata('id');
-			$sql =  "SELECT * FROM system_info where user_id = '{$this->user_id}'";
+			// $sql =  "SELECT * FROM system_info where user_id = '{$this->user_id}' or user_id = '{$user2}'";
+			$sql =  "SELECT * FROM system_info where user_id = '{$this->user_id}' or user_id = '{$user2}'";
 			$qry = $this->conn->query($sql);
 				while($row = $qry->fetch_assoc()){
 					$_SESSION['system_info'][$row['meta_field']] = $row['meta_value'];
@@ -35,21 +39,21 @@ class SystemSettings extends DBConnection{
 	}
 	function update_settings_info(){
 		$data = "";
+		// return false;
 		foreach ($_POST as $key => $value) {
-			if(!in_array($key,array("about_us","privacy_policy")))
+			// if(!in_array($key,array("about_us","privacy_policy")))
+
 			if(isset($_SESSION['system_info'][$key])){
+				// $flash = $this->set_flashdata('success',$_SESSION['system_info'][$key]);
+				// return true;
 				$value = str_replace("'", "&apos;", $value);
 				$qry = $this->conn->query("UPDATE system_info set meta_value = '{$value}' where meta_field = '{$key}' and user_id ='{$this->user_id}' ");
 			}else{
+				// return false;
 				$qry = $this->conn->query("INSERT into system_info set meta_value = '{$value}', meta_field = '{$key}', user_id ='{$this->user_id}' ");
 			}
 		}
-		if(isset($_POST['about_us'])){
-			file_put_contents('../about.html',$_POST['about_us']);
-		}
-		if(isset($_POST['privacy_policy'])){
-			file_put_contents('../privacy_policy.html',$_POST['privacy_policy']);
-		}
+		
 		if(isset($_FILES['img']) && $_FILES['img']['tmp_name'] != ''){
 			$fname = 'uploads/logo-'.(time()).'.png';
 			$dir_path =base_app. $fname;
@@ -175,11 +179,12 @@ class SystemSettings extends DBConnection{
 			return true;
 	}
 	function sess_des2(){
-		if(isset($_SESSION['system_info'])){
-				unset($_SESSION['system_info']);
+		if(isset($_SESSION['system_info']))
+		{
+			unset($_SESSION['system_info']);
 			return true;
 		}
-			return true;
+			return false;
 	}
 	function info($field=''){
 		if(!empty($field)){
@@ -197,7 +202,12 @@ class SystemSettings extends DBConnection{
 		}
 	}
 }
-$user = $_SESSION['userdata']['id'];
+if(isset($_SESSION['userdata']['id']))
+{
+	$user = $_SESSION['userdata']['id'];
+}else{
+	$user = 0;
+}
 $_settings = new SystemSettings($user);
 $_settings->load_system_info();
 $action = !isset($_GET['f']) ? 'none' : strtolower($_GET['f']);

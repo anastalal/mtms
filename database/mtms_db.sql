@@ -11,12 +11,6 @@ CREATE TABLE IF NOT EXISTS `branch_list` (
   PRIMARY KEY (`id`)
 );
 
---
--- Dumping data for table `branch_list`
---
-
-
-
 -- --------------------------------------------------------
 
 --
@@ -31,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `fee_list` (
   `fee` float NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ;
+);
 
 --
 -- Dumping data for table `fee_list`
@@ -63,9 +57,8 @@ CREATE TABLE IF NOT EXISTS `system_info` (
 --
 
 INSERT INTO `system_info` (`id`, `user_id`, `meta_field`, `meta_value`) VALUES
-(15, 1, 'name', 'Cach Transfer'),
-(16, 1, 'short_name', 'Cach Transfer');
-
+(1, 1, 'name', 'Cach Transfer'),
+(2, 1, 'short_name', 'Cach Transfer');
 -- --------------------------------------------------------
 
 --
@@ -84,15 +77,18 @@ CREATE TABLE IF NOT EXISTS `transaction_list` (
   `status` tinyint(1) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_updated` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `sender_agent_id` int DEFAULT NULL,
+  `reciver_agent_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `branch_id` (`branch_id`),
   KEY `user_id` (`user_id`)
-) ;
+);
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `transaction_list`
+-- Table structure for table `transaction_meta`
 --
-
 
 DROP TABLE IF EXISTS `transaction_meta`;
 CREATE TABLE IF NOT EXISTS `transaction_meta` (
@@ -101,12 +97,13 @@ CREATE TABLE IF NOT EXISTS `transaction_meta` (
   `meta_value` text NOT NULL,
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `transaction_id` (`transaction_id`)
-) ;
+);
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `transaction_meta`
+-- Table structure for table `users`
 --
-
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
@@ -124,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `date_updated` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `location_id` (`branch_id`)
-);
+) ;
 
 --
 -- Dumping data for table `users`

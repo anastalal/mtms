@@ -24,6 +24,15 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 			<label for="fee" class="control-label">Fee</label>
 			<input type="number" step="any" id="fee" name="fee" class="form-control form-control-sm rounded-0 text-right" value="<?php echo isset($fee) ? $fee :0 ?>" required>
 		</div>
+		<div class="form-group">
+                            <label for="currency" class="control-label">Currency</label>
+                            <select  required name="currency" value="<?php echo isset($meta['currency']) ? $meta['currency'] : "" ?>" class="form-control form-control-sm rounded-0 text-right" id="currency">
+                                <option  value="">select</option>
+                                <option <?php echo isset($currency) && $currency == 'USD' ? 'selected' : "" ?> value="USD">USD</option>
+                                <option <?php echo isset($currency) && $currency == 'YR' ? 'selected' : "" ?> value="YR">YR</option>
+                                <option <?php echo isset($currency) && $currency == 'SR' ? 'selected' : "" ?> value="SR">SR</option>
+                            </select>
+                        </div>
 	</form>
 </div>
 <script>

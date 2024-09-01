@@ -88,7 +88,7 @@ $branch_arr = array_column($res,'name','id');
                         <dt class="text-muted">Purpose/Remarks:</dt>
                         <dd class="pl-4"><?php echo isset($purpose) && !empty($purpose) ? $purpose : 'N/A' ?></dd>
                         <dt class="text-muted hide-print">Sent From:</dt>
-                        <dd class="pl-4 hide-print"><?php echo isset($branch_id) ? $branch_arr[$branch_id] : '' ?></dd>
+                        <dd class="pl-4 hide-print"><?php echo isset($branch_id) && $branch_id != null ? $branch_arr[$branch_id] : ''  ?></dd>
                         <dt class="text-muted">Currency:</dt>
                          <dd class="pl-4"><?php echo isset($meta['currency']) ? $meta['currency'] : '' ?></dd>
                     </dl>

@@ -75,20 +75,12 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 				
 				<div class="form-group col-6">
 					<label for="branch_id">Branch</label>
-					<select name="branch_id" id="branch_id" class="custom-select custom-select-sm select2">
+					<select required name="branch_id" id="branch_id" class="custom-select custom-select-sm select2">
 						<option value="" disabled <?php echo !isset($meta['branch_id']) ? "selected" :'' ?>></option>
 						<?php 
-						// $user_id = 0;
 						if($_settings->userdata('type') == 1) {
-							// $branch_qry = $conn->query("SELECT * FROM branch_list WHERE `status` = 1 AND user_id = $user_id ORDER BY `name` ASC");
-							// $branch_qry2d = $conn->query("SELECT * FROM branch_list WHERE `status` = 1  ORDER BY `name` ASC");
 							$branch_qry = $conn->query("SELECT * FROM branch_list WHERE `status` = 1 AND user_id = '{$_settings->userdata('id')}' ".(isset($meta['branch_id']) && $meta['branch_id'] > 0 ? " OR id = '{$meta['branch_id']}'" : '' )." ORDER BY `name` ASC");
-
 						} 
-						// else {
-						// 	$branch_qry = $conn->query("SELECT * FROM branch_list WHERE `status` = 1 AND user_id = '{$_settings->userdata('id')}' ".(isset($meta['branch_id']) && $meta['branch_id'] > 0 ? " OR id = '{$meta['branch_id']}'" : '' )." ORDER BY `name` ASC");
-						// }
-						
 						while($row = $branch_qry->fetch_assoc()):
 						?>
 						<option value="<?php echo $row['id'] ?>" <?php echo isset($meta['branch_id']) && $meta['branch_id'] == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>

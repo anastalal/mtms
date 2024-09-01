@@ -23,6 +23,7 @@
 						<th>Date Created</th>
 						<th>Amount From</th>
 						<th>Amount To</th>
+						<th>Currency</th>
 						<th>Charge</th>
 						<th>Action</th>
 					</tr>
@@ -38,6 +39,7 @@
 							<td><?php echo date("Y-m-d H:i",strtotime($row['date_created'])) ?></td>
 							<td class="text-right"><?php echo number_format($row['amount_from'],2) ?></td>
 							<td class="text-right"><?php echo number_format($row['amount_to'],2) ?></td>
+							<td class="text-right"><?php echo ($row['currency']) ?></td>
 							<td class="text-right"><?php echo number_format($row['fee'],2) ?></td>
 							<td align="center">
 								 <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">

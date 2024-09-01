@@ -1,6 +1,6 @@
 <?php require_once('../config.php'); ?>
  <!DOCTYPE html >
-<html lang="en" class="" dir="ltr" >
+<html lang="ar" class="" dir="rtl" >
 <?php require_once('inc/header.php') ?>
   <body  class="sidebar-mini layout-fixed control-sidebar-slide-open layout-navbar-fixed dark-mode sidebar-mini-md sidebar-mini-xs" data-new-gr-c-s-check-loaded="14.991.0" data-gr-ext-installed="" style="height: auto;">
     <div class="wrapper">
