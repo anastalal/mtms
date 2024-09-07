@@ -12,7 +12,7 @@
   }
 </style>
 <!-- Navbar -->
-      <nav style="left: 0;" class="main-header navbar navbar-expand navbar-dark border border-light border-top-0  border-left-0 border-right-0 navbar-light text-sm">
+      <nav style="left: 0;" class="main-header navbar navbar-expand navbar-darks border border-light border-top-0  border-left-0 border-right-0 navbar-light text-sm">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -54,7 +54,10 @@
                     <span class="sr-only">Toggle Dropdown</span>
                   </button>
                   <div class="dropdown-menu" role="menu">
+                    <?php if($_settings->userdata('type') == 3 ) { ?>
                     <a class="dropdown-item" href="<?php echo base_url.'admin/?page=user' ?>"><span class="fa fa-user"></span> My Account</a>
+                   <?php }
+                    ?>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="<?php echo base_url.'/classes/Login.php?f=logout' ?>"><span class="fas fa-sign-out-alt"></span> Logout</a>
                   </div>

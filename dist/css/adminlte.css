@@ -19138,7 +19138,7 @@ html.maximized-card {
 }
 
 .card-header > .card-tools {
-  float: right;
+  float: left;
   margin-right: -0.625rem;
 }
 

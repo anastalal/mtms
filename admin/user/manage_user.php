@@ -72,24 +72,36 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 					<?php
 				}
 				?>
-				
+				<?php if($_settings->userdata('type') == 3){  ?>
 				<div class="form-group col-6">
 					<label for="branch_id">Branch</label>
 					<select required name="branch_id" id="branch_id" class="custom-select custom-select-sm select2">
 						<option value="" disabled <?php echo !isset($meta['branch_id']) ? "selected" :'' ?>></option>
 						<?php 
-						if($_settings->userdata('type') == 1) {
-							$branch_qry = $conn->query("SELECT * FROM branch_list WHERE `status` = 1 AND user_id = '{$_settings->userdata('id')}' ".(isset($meta['branch_id']) && $meta['branch_id'] > 0 ? " OR id = '{$meta['branch_id']}'" : '' )." ORDER BY `name` ASC");
+						?>
+					</select>
+				</div> 
+				<?php }?>
+
+				<?php if($_settings->userdata('type') == 1){  ?>
+				<div class="form-group col-6">
+					<label for="branch_id2">Branch</label>
+					<select required name="branch_id" id="branch_id2" class="custom-select custom-select-sm select2">
+						<option value="" disabled <?php echo !isset($meta['branch_id']) ? "selected" :'' ?>></option>
+						<?php 
+						if($_settings->userdata('type') == 1 ) {
+							$branch_qry = $conn->query("SELECT * FROM branch_list WHERE `status` = 1 AND user_id = '{$_settings->userdata('id')}' ");
+							// $branch_qry = $conn->query("SELECT * FROM branch_list WHERE `status` = 1 AND user_id = '{$_settings->userdata('id')}' ".(isset($meta['branch_id']) && $meta['branch_id'] > 0 ? " OR id = '{$meta['branch_id']}'" : '' )." ORDER BY `name` ASC");
 						} 
-						while($row = $branch_qry->fetch_assoc()):
+						while($row = $branch_qry->fetch_assoc()){
 						?>
 						<option value="<?php echo $row['id'] ?>" <?php echo isset($meta['branch_id']) && $meta['branch_id'] == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>
 						<?php
-					endwhile;
+						}
 					  ?>
 					</select>
 				</div>
-
+            <?php }  ?>
 				<div class="form-group col-6">
 					<label for="" class="control-label">Avatar</label>
 					<div class="custom-file">
@@ -109,8 +121,8 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 	<div class="card-footer">
 			<div class="col-md-12">
 				<div class="row">
-					<button class="btn btn-sm btn-primary mr-2" form="manage-user">Save</button>
-					<a class="btn btn-sm btn-secondary" href="./?page=user/list">Cancel</a>
+					<button class="btn btn-sm btn-primary " form="manage-user">Save</button>
+					<a class="btn btn-sm btn-secondary mr-2" href="./?page=user/list">Cancel</a>
 				</div>
 			</div>
 	</div>

@@ -146,7 +146,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                         <select name="branch_id" id="branch_id" class="custom-select custom-select-sm select2">
                             <option value="" disabled <?php echo !isset($meta['branch_id']) ? "selected" :'' ?>></option>
                             <?php 
-                                $branch_qry = $conn->query("SELECT * FROM branch_list where `status` = 1 ".(isset( $meta['branch_id']) &&  $meta['branch_id'] > 0 ? " OR id = '{$meta['branch_id']}'" : '' )." order by `name` asc ");
+                                $branch_qry = $conn->query("SELECT * FROM branch_list where `status` = 1 and user_id = '{$_settings->userdata('id')}' order by `name` asc ");
                                 while($row = $branch_qry->fetch_assoc()):
                             ?>
                             <option value="<?php echo $row['id'] ?>" <?php echo isset($branch_id) && $branch_id == $row['id'] ? 'selected' : '' ?>><?php echo $row['name'] ?></option>
